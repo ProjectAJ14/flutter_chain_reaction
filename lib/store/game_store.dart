@@ -7,23 +7,34 @@ import '../services/index.dart';
 
 part 'game_store.g.dart';
 
+enum GameStatus { init, play }
+
+const List<MaterialColor> primaries = <MaterialColor>[
+  Colors.red,
+  Colors.green,
+  Colors.blue,
+  Colors.yellow,
+  Colors.purple,
+  Colors.orange,
+  Colors.teal,
+  Colors.cyan,
+];
+
 class GameStore = _GameStore with _$GameStore;
 
 abstract class _GameStore with Store {
   @observable
-  List<Player> players = [
-    Player(
-      name: 'Player 1',
-      color: Colors.red,
-    ),
-    Player(
-      name: 'Player 2',
-      color: Colors.green,
-    ),
-  ];
+  GameStatus status = GameStatus.init;
+
+  @observable
+  ObservableList<Player> players = ObservableList<Player>();
 
   @computed
   Color get currentPlayerColor => players[currentPlayerIndex].color;
+
+  @computed
+  bool get allPlayersHavePlayed =>
+      players.where((player) => !player.hasPlayed).isEmpty;
 
   Color byPlayerIndex(int playerIndex) {
     if (playerIndex == -1) {
@@ -44,14 +55,17 @@ abstract class _GameStore with Store {
   @computed
   Player get winner => players[winnerPlayerIndex];
 
-  int boardSize = 0;
+  @observable
+  int boardSize = 10;
+
+  @observable
+  int playerCount = 2;
 
   @observable
   ObservableList<GameTile> tiles = ObservableList<GameTile>();
 
   @action
-  void init(int boardSize) {
-    this.boardSize = boardSize;
+  void init() {
     tiles = ObservableList.of(
       List.generate(
         boardSize * boardSize,
@@ -63,23 +77,42 @@ abstract class _GameStore with Store {
         ),
       ),
     );
+    players = ObservableList.of(
+      List.generate(
+        playerCount,
+        (index) => Player(
+          name: 'Player ${index + 1}',
+          color: primaries[index],
+        ),
+      ),
+    );
+    status = GameStatus.play;
+  }
+
+  @action
+  void setBoardSize(int value) {
+    logger.d('SET BOARD SIZE: $value');
+    boardSize = value;
+  }
+
+  @action
+  void setPlayerCount(int value) {
+    logger.d('SET PLAYER COUNT: $value');
+    playerCount = value;
   }
 
   @action
   void reset() {
-    tiles = ObservableList.of(
-      List.generate(
-        boardSize * boardSize,
-        (index) => GameTile(
-          index: index,
-          boardSize: boardSize,
-          value: 0,
-          playerIndex: -1,
-        ),
-      ),
-    );
+    //Reset players
+    players.clear();
+    //Reset tiles
+    tiles.clear();
+    //Reset winner
     winnerPlayerIndex = -1;
+    //Reset current player
     currentPlayerIndex = 0;
+    //Reset status
+    status = GameStatus.init;
   }
 
   @action
@@ -110,25 +143,32 @@ abstract class _GameStore with Store {
         !autoPlayed) {
       return;
     }
+    //Check if current player has played
+    final currentPlayer = players[currentPlayerIndex];
+    if (!currentPlayer.hasPlayed) {
+      currentPlayer.hasPlayed = true;
+    }
 
     if (hasWinner) {
       return;
     }
 
-    //Check if player has won
-    List<int> playerScores = [];
-    for (int i = 0; i < players.length; i++) {
-      final playerTiles = tiles.where((tile) => tile.playerIndex == i);
-      int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
-      playerScores.add(playerScore);
-    }
+    if (allPlayersHavePlayed) {
+      //Check if player has won
+      List<int> playerScores = [];
+      for (int i = 0; i < players.length; i++) {
+        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
+        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
+        playerScores.add(playerScore);
+      }
 
-    //Check if the other player has zero tiles and the current player has more than 0 tiles
-    if (playerScores[currentPlayerIndex] > 0 &&
-        playerScores.where((score) => score == 0).length ==
-            players.length - 1) {
-      setWinner(currentPlayerIndex);
-      return;
+      //Check if the other player has zero tiles and the current player has more than 0 tiles
+      if (playerScores[currentPlayerIndex] > 0 &&
+          playerScores.where((score) => score == 0).length ==
+              players.length - 1) {
+        setWinner(currentPlayerIndex);
+        return;
+      }
     }
 
     //Corner Tiles
@@ -160,6 +200,17 @@ abstract class _GameStore with Store {
         await playNeighbours(tileIndex);
       }
     }
+    if (allPlayersHavePlayed) {
+      //Mark the player who has played and their score is zero as not lost
+      for (int i = 0; i < players.length; i++) {
+        final player = players[i];
+        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
+        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
+        if (playerScore == 0) {
+          player.hasLost = true;
+        }
+      }
+    }
 
     if (changeTurn) {
       nextTurn();
@@ -168,11 +219,14 @@ abstract class _GameStore with Store {
 
   @action
   void nextTurn() {
-    int nextPlayerIndex = currentPlayerIndex + 1;
-    if (nextPlayerIndex >= players.length) {
-      nextPlayerIndex = 0;
+    while (true) {
+      currentPlayerIndex++;
+      if (currentPlayerIndex >= players.length) {
+        currentPlayerIndex = 0;
+      }
+      if (!players[currentPlayerIndex].hasLost) {
+        break;
+      }
     }
-    logger.d('nextTurn($currentPlayerIndex)->$nextPlayerIndex ');
-    currentPlayerIndex = nextPlayerIndex;
   }
 }

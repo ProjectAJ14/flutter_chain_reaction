@@ -29,7 +29,7 @@ class GameOverWidget extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: store.reset,
-                child: const Text('Play again'),
+                child: const Text('PLAY AGAIN'),
               ),
             ),
           ],

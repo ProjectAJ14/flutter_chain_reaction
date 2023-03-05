@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chain_reaction/services/index.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +21,7 @@ class GameWidget extends StatelessWidget {
       final height = constraints.maxHeight;
       final width = constraints.maxWidth;
       const gutter = 4.0;
-      const margin = 50.0;
+      const margin = 80.0;
       final gutterSpacing = gutter * (boardSize + 1);
       final itemWidth = (width - gutterSpacing) / boardSize;
       final itemHeight = (height - gutterSpacing - margin) / boardSize;
@@ -37,30 +36,53 @@ class GameWidget extends StatelessWidget {
         ),
         child: Container(
           color: Colors.white10,
-          margin: const EdgeInsets.only(
-            top: margin,
-          ),
           padding: const EdgeInsets.all(gutter),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: width / boardSize,
-              childAspectRatio: itemWidth / itemHeight,
-              crossAxisSpacing: gutter,
-              mainAxisSpacing: gutter,
-            ),
-            itemCount: store.tiles.length,
-            itemBuilder: (BuildContext ctx, index) {
-              return Observer(builder: (context) {
-                final tile = store.tiles[index];
-                logger.d('BUILD:Tile[$index]');
-                return GameTileWidget(
-                  size: itemWidth * 0.3,
-                  tile: tile,
-                  parentSize: Size(itemWidth, itemHeight),
-                  onTap: () => store.play(index),
+          child: Column(
+            children: [
+              SizedBox(
+                height: margin,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: store.reset,
+                      child: const Text(
+                        'Reset',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Observer(builder: (context) {
+                final tiles = store.tiles;
+                return Flexible(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: width / boardSize,
+                      childAspectRatio: itemWidth / itemHeight,
+                      crossAxisSpacing: gutter,
+                      mainAxisSpacing: gutter,
+                    ),
+                    itemCount: tiles.length,
+                    itemBuilder: (BuildContext ctx, index) {
+                      return Observer(builder: (context) {
+                        final tile = tiles[index];
+                        return GameTileWidget(
+                          size: itemWidth * 0.3,
+                          tile: tile,
+                          parentSize: Size(itemWidth, itemHeight),
+                          onTap: () => store.play(index),
+                        );
+                      });
+                    },
+                  ),
                 );
-              });
-            },
+              }),
+            ],
           ),
         ),
       );

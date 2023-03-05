@@ -16,23 +16,51 @@ mixin _$GameStore on _GameStore, Store {
           Computed<Color>(() => super.currentPlayerColor,
               name: '_GameStore.currentPlayerColor'))
       .value;
+  Computed<bool>? _$allPlayersHavePlayedComputed;
+
+  @override
+  bool get allPlayersHavePlayed => (_$allPlayersHavePlayedComputed ??=
+          Computed<bool>(() => super.allPlayersHavePlayed,
+              name: '_GameStore.allPlayersHavePlayed'))
+      .value;
   Computed<bool>? _$hasWinnerComputed;
 
   @override
   bool get hasWinner => (_$hasWinnerComputed ??=
           Computed<bool>(() => super.hasWinner, name: '_GameStore.hasWinner'))
       .value;
+  Computed<Player>? _$winnerComputed;
+
+  @override
+  Player get winner => (_$winnerComputed ??=
+          Computed<Player>(() => super.winner, name: '_GameStore.winner'))
+      .value;
+
+  late final _$statusAtom = Atom(name: '_GameStore.status', context: context);
+
+  @override
+  GameStatus get status {
+    _$statusAtom.reportRead();
+    return super.status;
+  }
+
+  @override
+  set status(GameStatus value) {
+    _$statusAtom.reportWrite(value, super.status, () {
+      super.status = value;
+    });
+  }
 
   late final _$playersAtom = Atom(name: '_GameStore.players', context: context);
 
   @override
-  List<Player> get players {
+  ObservableList<Player> get players {
     _$playersAtom.reportRead();
     return super.players;
   }
 
   @override
-  set players(List<Player> value) {
+  set players(ObservableList<Player> value) {
     _$playersAtom.reportWrite(value, super.players, () {
       super.players = value;
     });
@@ -67,6 +95,38 @@ mixin _$GameStore on _GameStore, Store {
   set winnerPlayerIndex(int value) {
     _$winnerPlayerIndexAtom.reportWrite(value, super.winnerPlayerIndex, () {
       super.winnerPlayerIndex = value;
+    });
+  }
+
+  late final _$boardSizeAtom =
+      Atom(name: '_GameStore.boardSize', context: context);
+
+  @override
+  int get boardSize {
+    _$boardSizeAtom.reportRead();
+    return super.boardSize;
+  }
+
+  @override
+  set boardSize(int value) {
+    _$boardSizeAtom.reportWrite(value, super.boardSize, () {
+      super.boardSize = value;
+    });
+  }
+
+  late final _$playerCountAtom =
+      Atom(name: '_GameStore.playerCount', context: context);
+
+  @override
+  int get playerCount {
+    _$playerCountAtom.reportRead();
+    return super.playerCount;
+  }
+
+  @override
+  set playerCount(int value) {
+    _$playerCountAtom.reportWrite(value, super.playerCount, () {
+      super.playerCount = value;
     });
   }
 
@@ -108,11 +168,33 @@ mixin _$GameStore on _GameStore, Store {
       ActionController(name: '_GameStore', context: context);
 
   @override
-  void init(int boardSize) {
+  void init() {
     final _$actionInfo =
         _$_GameStoreActionController.startAction(name: '_GameStore.init');
     try {
-      return super.init(boardSize);
+      return super.init();
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setBoardSize(int value) {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.setBoardSize');
+    try {
+      return super.setBoardSize(value);
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPlayerCount(int value) {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.setPlayerCount');
+    try {
+      return super.setPlayerCount(value);
     } finally {
       _$_GameStoreActionController.endAction(_$actionInfo);
     }
@@ -154,12 +236,17 @@ mixin _$GameStore on _GameStore, Store {
   @override
   String toString() {
     return '''
+status: ${status},
 players: ${players},
 currentPlayerIndex: ${currentPlayerIndex},
 winnerPlayerIndex: ${winnerPlayerIndex},
+boardSize: ${boardSize},
+playerCount: ${playerCount},
 tiles: ${tiles},
 currentPlayerColor: ${currentPlayerColor},
-hasWinner: ${hasWinner}
+allPlayersHavePlayed: ${allPlayersHavePlayed},
+hasWinner: ${hasWinner},
+winner: ${winner}
     ''';
   }
 }
