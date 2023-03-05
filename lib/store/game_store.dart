@@ -14,12 +14,10 @@ abstract class _GameStore with Store {
   List<Player> players = [
     Player(
       name: 'Player 1',
-      score: 0,
       color: Colors.red,
     ),
     Player(
       name: 'Player 2',
-      score: 0,
       color: Colors.green,
     ),
   ];
@@ -37,123 +35,135 @@ abstract class _GameStore with Store {
   @observable
   int currentPlayerIndex = 0;
 
+  @observable
+  int winnerPlayerIndex = -1;
+
+  @computed
+  bool get hasWinner => winnerPlayerIndex != -1;
+
+  @computed
+  Player get winner => players[winnerPlayerIndex];
+
   int boardSize = 0;
 
   @observable
-  List<GameTile> tiles = [];
+  ObservableList<GameTile> tiles = ObservableList<GameTile>();
 
   @action
   void init(int boardSize) {
     this.boardSize = boardSize;
-    tiles = List.generate(
-      boardSize * boardSize,
-      (index) => GameTile(
-        index: index,
-        boardSize: boardSize,
-        // value: 1,
-        // playerIndex: index % 2 == 0 ? 0 : 1,
+    tiles = ObservableList.of(
+      List.generate(
+        boardSize * boardSize,
+        (index) => GameTile(
+          index: index,
+          boardSize: boardSize,
+          value: 0,
+          playerIndex: -1,
+        ),
       ),
     );
   }
 
   @action
-  Future<int> play(
+  void reset() {
+    tiles = ObservableList.of(
+      List.generate(
+        boardSize * boardSize,
+        (index) => GameTile(
+          index: index,
+          boardSize: boardSize,
+          value: 0,
+          playerIndex: -1,
+        ),
+      ),
+    );
+    winnerPlayerIndex = -1;
+    currentPlayerIndex = 0;
+  }
+
+  @action
+  void setWinner(int playerIndex) {
+    winnerPlayerIndex = playerIndex;
+  }
+
+  @action
+  Future<void> playNeighbours(int tileIndex) async {
+    final tile = tiles[tileIndex];
+    for (var neighborIndex in tile.neighbors) {
+      await play(neighborIndex, changeTurn: false, autoPlayed: true);
+    }
+  }
+
+  @action
+  Future<void> play(
     int tileIndex, {
     bool changeTurn = true,
     bool autoPlayed = false,
   }) async {
-    logger.d('play: $tileIndex${autoPlayed ? ' (auto)' : ''}'
+    logger.d('PLAY: $tileIndex${autoPlayed ? ' (auto)' : ''}'
         '${changeTurn ? '' : ' (no change turn)'}');
     final tile = tiles[tileIndex];
 
     if (tile.playerIndex != -1 &&
         tile.playerIndex != currentPlayerIndex &&
         !autoPlayed) {
-      return -1;
+      return;
     }
 
-    if (autoPlayed) {
-      //Check if player has won
-      final playerTiles = tiles
-          .where(
-              (t) => t.playerIndex == currentPlayerIndex || t.playerIndex == -1)
-          .toList();
-      if (playerTiles.length == boardSize * boardSize) {
-        //Player has won
-        return currentPlayerIndex;
-      }
+    if (hasWinner) {
+      return;
+    }
+
+    //Check if player has won
+    List<int> playerScores = [];
+    for (int i = 0; i < players.length; i++) {
+      final playerTiles = tiles.where((tile) => tile.playerIndex == i);
+      int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
+      playerScores.add(playerScore);
+    }
+
+    //Check if the other player has zero tiles and the current player has more than 0 tiles
+    if (playerScores[currentPlayerIndex] > 0 &&
+        playerScores.where((score) => score == 0).length ==
+            players.length - 1) {
+      setWinner(currentPlayerIndex);
+      return;
     }
 
     //Corner Tiles
     if (tile.onCorner) {
       if (tile.isEmpty) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 1, playerIndex: currentPlayerIndex);
+        tile.update(value: 1, playerIndex: currentPlayerIndex);
       } else {
-        tiles[tileIndex] = tile.copyWith(value: 0, playerIndex: -1);
-        //Play on neighbors
-        for (var neighborIndex in tile.neighbors) {
-          int result = await play(
-            neighborIndex,
-            changeTurn: false,
-            autoPlayed: true,
-          );
-          if (result != -1) {
-            return result;
-          }
-        }
+        tile.update(value: 0, playerIndex: -1);
+        await playNeighbours(tileIndex);
       }
     } else if (tile.onEdge) {
       if (tile.isEmpty) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 1, playerIndex: currentPlayerIndex);
+        tile.update(value: 1, playerIndex: currentPlayerIndex);
       } else if (tile.isLevel1) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 2, playerIndex: currentPlayerIndex);
+        tile.update(value: 2, playerIndex: currentPlayerIndex);
       } else {
-        tiles[tileIndex] = tile.copyWith(value: 0, playerIndex: -1);
-        //Play on neighbors
-        for (var neighborIndex in tile.neighbors) {
-          int result = await play(
-            neighborIndex,
-            changeTurn: false,
-            autoPlayed: true,
-          );
-          if (result != -1) {
-            return result;
-          }
-        }
+        tile.update(value: 0, playerIndex: -1);
+        await playNeighbours(tileIndex);
       }
     } else {
       if (tile.isEmpty) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 1, playerIndex: currentPlayerIndex);
+        tile.update(value: 1, playerIndex: currentPlayerIndex);
       } else if (tile.isLevel1) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 2, playerIndex: currentPlayerIndex);
+        tile.update(value: 2, playerIndex: currentPlayerIndex);
       } else if (tile.isLevel2) {
-        tiles[tileIndex] =
-            tile.copyWith(value: 3, playerIndex: currentPlayerIndex);
+        tile.update(value: 3, playerIndex: currentPlayerIndex);
       } else {
-        tiles[tileIndex] = tile.copyWith(value: 0, playerIndex: -1);
-        //Play on neighbors
-        for (var neighborIndex in tile.neighbors) {
-          int result = await play(
-            neighborIndex,
-            changeTurn: false,
-            autoPlayed: true,
-          );
-          if (result != -1) {
-            return result;
-          }
-        }
+        tile.update(value: 0, playerIndex: -1);
+        await playNeighbours(tileIndex);
       }
     }
 
     if (changeTurn) {
       nextTurn();
     }
-    return -1;
   }
 
   @action

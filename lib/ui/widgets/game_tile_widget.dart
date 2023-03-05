@@ -26,16 +26,16 @@ class GameTileWidget extends StatelessWidget {
         color: Colors.black,
         child: Stack(
           children: [
+            Text(
+              tile.toShow(),
+              style: TextStyle(
+                color: Colors.white30,
+                fontSize: size * 0.4,
+              ),
+            ),
             Center(
               child: _buildTile(context),
             ),
-            Text(
-              '$tile',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: size * 0.4,
-              ),
-            )
           ],
         ),
       ),

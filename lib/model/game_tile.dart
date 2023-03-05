@@ -1,17 +1,30 @@
+import 'package:mobx/mobx.dart';
+
 import '../services/index.dart';
 
-class GameTile {
-  final int index;
-  final int value;
-  final int playerIndex;
-  final int boardSize;
-  late Position position;
+part 'game_tile.g.dart';
 
-  GameTile({
+class GameTile = _GameTile with _$GameTile;
+
+abstract class _GameTile with Store {
+  int index = 0;
+
+  @observable
+  int value = 0;
+
+  @observable
+  int playerIndex = -1;
+
+  int boardSize = 0;
+
+  @observable
+  Position position = Position(x: 0, y: 0);
+
+  _GameTile({
     required this.index,
     required this.boardSize,
-    this.value = 0,
-    this.playerIndex = -1,
+    required this.value,
+    required this.playerIndex,
   }) {
     position = Position(
       x: index ~/ boardSize,
@@ -19,12 +32,14 @@ class GameTile {
     );
   }
 
+  @computed
   bool get onCorner =>
       position.x == 0 && position.y == 0 ||
       position.x == (boardSize - 1) && position.y == 0 ||
       position.x == (boardSize - 1) && position.y == (boardSize - 1) ||
       position.x == 0 && position.y == (boardSize - 1);
 
+  @computed
   bool get onEdge =>
       (position.x == 0 && (position.y != 0 || position.y != (boardSize - 1))) ||
       (position.x == (boardSize - 1) &&
@@ -33,14 +48,19 @@ class GameTile {
       (position.y == (boardSize - 1) &&
           (position.x != 0 || position.x != (boardSize - 1)));
 
+  @computed
   bool get isEmpty => value == 0;
 
+  @computed
   bool get isLevel1 => value == 1;
 
+  @computed
   bool get isLevel2 => value == 2;
 
+  @computed
   bool get isLevel3 => value == 3;
 
+  @computed
   List<int> get neighbors {
     final neighbors = <int>[];
     if (position.x > 0) {
@@ -58,26 +78,22 @@ class GameTile {
     return neighbors;
   }
 
-  copyWith({
+  @action
+  void update({
     int? value,
     int? playerIndex,
   }) {
     final valueX = value ?? this.value;
     final playerIndexX = playerIndex ?? this.playerIndex;
 
-    logger.d('copyWith($index): value(${this.value}->$valueX)'
+    logger.d('UPDATE($index): value(${this.value}->$valueX)'
         ' playerIndex(${this.playerIndex}->$playerIndexX)');
 
-    return GameTile(
-      index: index,
-      boardSize: boardSize,
-      value: valueX,
-      playerIndex: playerIndexX,
-    );
+    this.value = valueX;
+    this.playerIndex = playerIndexX;
   }
 
-  @override
-  String toString() {
+  String toShow() {
     return '${onCorner ? 'C' : ''}${onEdge ? 'E' : ''}($position)=$value,$playerIndex,$neighbors';
   }
 }

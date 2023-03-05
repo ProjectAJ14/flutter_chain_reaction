@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chain_reaction/services/index.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -8,25 +9,24 @@ import 'game_tile_widget.dart';
 class GameWidget extends StatelessWidget {
   const GameWidget({
     super.key,
-    required this.crossAxisCount,
+    required this.boardSize,
     required this.color,
   });
 
   final Color color;
-  final int crossAxisCount;
+  final int boardSize;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    const gutter = 4.0;
-    const margin = 50.0;
-    final gutterSpacing = gutter * (crossAxisCount + 1);
-    final itemWidth = (size.width - gutterSpacing) / crossAxisCount;
-    final itemHeight = (size.height - gutterSpacing - margin) / crossAxisCount;
-
-    return Observer(builder: (context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final height = constraints.maxHeight;
+      final width = constraints.maxWidth;
+      const gutter = 4.0;
+      const margin = 50.0;
+      final gutterSpacing = gutter * (boardSize + 1);
+      final itemWidth = (width - gutterSpacing) / boardSize;
+      final itemHeight = (height - gutterSpacing - margin) / boardSize;
       final store = Provider.of<GameStore>(context);
-
       return Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
@@ -43,29 +43,23 @@ class GameWidget extends StatelessWidget {
           padding: const EdgeInsets.all(gutter),
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: size.width / crossAxisCount,
+              maxCrossAxisExtent: width / boardSize,
               childAspectRatio: itemWidth / itemHeight,
               crossAxisSpacing: gutter,
               mainAxisSpacing: gutter,
             ),
             itemCount: store.tiles.length,
             itemBuilder: (BuildContext ctx, index) {
-              final tile = store.tiles[index];
-              return GameTileWidget(
-                size: itemWidth * 0.4,
-                tile: tile,
-                parentSize: Size(itemWidth, itemHeight),
-                onTap: () async {
-                  int result = await store.play(index);
-                  if (result != -1) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Player ${result + 1} won!'),
-                      ),
-                    );
-                  }
-                },
-              );
+              return Observer(builder: (context) {
+                final tile = store.tiles[index];
+                logger.d('BUILD:Tile[$index]');
+                return GameTileWidget(
+                  size: itemWidth * 0.3,
+                  tile: tile,
+                  parentSize: Size(itemWidth, itemHeight),
+                  onTap: () => store.play(index),
+                );
+              });
             },
           ),
         ),
