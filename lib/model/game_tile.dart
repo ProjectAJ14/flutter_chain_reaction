@@ -18,6 +18,12 @@ abstract class _GameTile with Store {
   int boardSize = 0;
 
   @observable
+  bool isBlasted = false;
+
+  @observable
+  int blastPlayerIndex = 0;
+
+  @observable
   Position position = Position(x: 0, y: 0);
 
   _GameTile({
@@ -82,7 +88,12 @@ abstract class _GameTile with Store {
   void update({
     int? value,
     int? playerIndex,
+    int blastPlayerIndex = -1,
   }) {
+    if (blastPlayerIndex >= 0) {
+      this.blastPlayerIndex = blastPlayerIndex;
+      blast();
+    }
     final valueX = value ?? this.value;
     final playerIndexX = playerIndex ?? this.playerIndex;
 
@@ -91,6 +102,15 @@ abstract class _GameTile with Store {
 
     this.value = valueX;
     this.playerIndex = playerIndexX;
+  }
+
+  @action
+  Future<void> blast() async {
+    logger.d('BLAST($index): value($value)'
+        ' playerIndex($playerIndex)');
+    isBlasted = true;
+    await Future.delayed(const Duration(milliseconds: 700));
+    isBlasted = false;
   }
 
   String toShow() {

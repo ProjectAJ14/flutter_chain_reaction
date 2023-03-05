@@ -156,7 +156,11 @@ abstract class _GameStore with Store {
       if (tile.isEmpty) {
         tile.update(value: 1, playerIndex: currentPlayerIndex);
       } else {
-        tile.update(value: 0, playerIndex: -1);
+        tile.update(
+          value: 0,
+          playerIndex: -1,
+          blastPlayerIndex: currentPlayerIndex,
+        );
         await playNeighbours(tileIndex);
       }
     } else if (tile.onEdge) {
@@ -165,7 +169,11 @@ abstract class _GameStore with Store {
       } else if (tile.isLevel1) {
         tile.update(value: 2, playerIndex: currentPlayerIndex);
       } else {
-        tile.update(value: 0, playerIndex: -1);
+        tile.update(
+          value: 0,
+          playerIndex: -1,
+          blastPlayerIndex: currentPlayerIndex,
+        );
         await playNeighbours(tileIndex);
       }
     } else {
@@ -176,7 +184,11 @@ abstract class _GameStore with Store {
       } else if (tile.isLevel2) {
         tile.update(value: 3, playerIndex: currentPlayerIndex);
       } else {
-        tile.update(value: 0, playerIndex: -1);
+        tile.update(
+          value: 0,
+          playerIndex: -1,
+          blastPlayerIndex: currentPlayerIndex,
+        );
         await playNeighbours(tileIndex);
       }
     }

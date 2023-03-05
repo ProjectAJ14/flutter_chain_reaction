@@ -84,6 +84,38 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
+  late final _$isBlastedAtom =
+      Atom(name: '_GameTile.isBlasted', context: context);
+
+  @override
+  bool get isBlasted {
+    _$isBlastedAtom.reportRead();
+    return super.isBlasted;
+  }
+
+  @override
+  set isBlasted(bool value) {
+    _$isBlastedAtom.reportWrite(value, super.isBlasted, () {
+      super.isBlasted = value;
+    });
+  }
+
+  late final _$blastPlayerIndexAtom =
+      Atom(name: '_GameTile.blastPlayerIndex', context: context);
+
+  @override
+  int get blastPlayerIndex {
+    _$blastPlayerIndexAtom.reportRead();
+    return super.blastPlayerIndex;
+  }
+
+  @override
+  set blastPlayerIndex(int value) {
+    _$blastPlayerIndexAtom.reportWrite(value, super.blastPlayerIndex, () {
+      super.blastPlayerIndex = value;
+    });
+  }
+
   late final _$positionAtom =
       Atom(name: '_GameTile.position', context: context);
 
@@ -100,15 +132,26 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
+  late final _$blastAsyncAction =
+      AsyncAction('_GameTile.blast', context: context);
+
+  @override
+  Future<void> blast() {
+    return _$blastAsyncAction.run(() => super.blast());
+  }
+
   late final _$_GameTileActionController =
       ActionController(name: '_GameTile', context: context);
 
   @override
-  void update({int? value, int? playerIndex}) {
+  void update({int? value, int? playerIndex, int blastPlayerIndex = -1}) {
     final _$actionInfo =
         _$_GameTileActionController.startAction(name: '_GameTile.update');
     try {
-      return super.update(value: value, playerIndex: playerIndex);
+      return super.update(
+          value: value,
+          playerIndex: playerIndex,
+          blastPlayerIndex: blastPlayerIndex);
     } finally {
       _$_GameTileActionController.endAction(_$actionInfo);
     }
@@ -119,6 +162,8 @@ mixin _$GameTile on _GameTile, Store {
     return '''
 value: ${value},
 playerIndex: ${playerIndex},
+isBlasted: ${isBlasted},
+blastPlayerIndex: ${blastPlayerIndex},
 position: ${position},
 onCorner: ${onCorner},
 onEdge: ${onEdge},
