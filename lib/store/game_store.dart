@@ -137,7 +137,6 @@ abstract class _GameStore with Store {
     logger.d('PLAY: $tileIndex${autoPlayed ? ' (auto)' : ''}'
         '${changeTurn ? '' : ' (no change turn)'}');
     final tile = tiles[tileIndex];
-
     if (tile.playerIndex != -1 &&
         tile.playerIndex != currentPlayerIndex &&
         !autoPlayed) {
@@ -151,24 +150,6 @@ abstract class _GameStore with Store {
 
     if (hasWinner) {
       return;
-    }
-
-    if (allPlayersHavePlayed) {
-      //Check if player has won
-      List<int> playerScores = [];
-      for (int i = 0; i < players.length; i++) {
-        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
-        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
-        playerScores.add(playerScore);
-      }
-
-      //Check if the other player has zero tiles and the current player has more than 0 tiles
-      if (playerScores[currentPlayerIndex] > 0 &&
-          playerScores.where((score) => score == 0).length ==
-              players.length - 1) {
-        setWinner(currentPlayerIndex);
-        return;
-      }
     }
 
     //Corner Tiles
@@ -219,6 +200,23 @@ abstract class _GameStore with Store {
 
   @action
   void nextTurn() {
+    if (allPlayersHavePlayed) {
+      //Check if player has won
+      List<int> playerScores = [];
+      for (int i = 0; i < players.length; i++) {
+        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
+        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
+        playerScores.add(playerScore);
+      }
+
+      //Check if the other player has zero tiles and the current player has more than 0 tiles
+      if (playerScores[currentPlayerIndex] > 0 &&
+          playerScores.where((score) => score == 0).length ==
+              players.length - 1) {
+        setWinner(currentPlayerIndex);
+        return;
+      }
+    }
     while (true) {
       currentPlayerIndex++;
       if (currentPlayerIndex >= players.length) {

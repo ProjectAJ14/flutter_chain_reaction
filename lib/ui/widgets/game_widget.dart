@@ -69,15 +69,13 @@ class GameWidget extends StatelessWidget {
                     ),
                     itemCount: tiles.length,
                     itemBuilder: (BuildContext ctx, index) {
-                      return Observer(builder: (context) {
-                        final tile = tiles[index];
-                        return GameTileWidget(
-                          size: itemWidth * 0.3,
-                          tile: tile,
-                          parentSize: Size(itemWidth, itemHeight),
-                          onTap: () => store.play(index),
-                        );
-                      });
+                      final tile = tiles[index];
+                      return GameTileWidget(
+                        size: itemWidth * 0.3,
+                        tile: tile,
+                        parentSize: Size(itemWidth, itemHeight),
+                        onTap: () => store.play(index),
+                      );
                     },
                   ),
                 );

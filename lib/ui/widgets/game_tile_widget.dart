@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/game_tile.dart';
@@ -20,26 +21,28 @@ class GameTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        color: Colors.black,
-        child: Stack(
-          children: [
-            Text(
-              tile.toShow(),
-              style: TextStyle(
-                color: Colors.white30,
-                fontSize: size * 0.4,
+    return Observer(builder: (context) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          color: Colors.black,
+          child: Stack(
+            children: [
+              Text(
+                tile.toShow(),
+                style: TextStyle(
+                  color: Colors.white30,
+                  fontSize: size * 0.4,
+                ),
               ),
-            ),
-            Center(
-              child: _buildTile(context),
-            ),
-          ],
+              Center(
+                child: _buildTile(context),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildTile(
