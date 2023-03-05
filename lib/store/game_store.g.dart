@@ -223,6 +223,28 @@ mixin _$GameStore on _GameStore, Store {
   }
 
   @override
+  void markAsLost() {
+    final _$actionInfo =
+        _$_GameStoreActionController.startAction(name: '_GameStore.markAsLost');
+    try {
+      return super.markAsLost();
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  bool checkWinner() {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.checkWinner');
+    try {
+      return super.checkWinner();
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void nextTurn() {
     final _$actionInfo =
         _$_GameStoreActionController.startAction(name: '_GameStore.nextTurn');

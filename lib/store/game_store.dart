@@ -136,6 +136,7 @@ abstract class _GameStore with Store {
   }) async {
     logger.d('PLAY: $tileIndex${autoPlayed ? ' (auto)' : ''}'
         '${changeTurn ? '' : ' (no change turn)'}');
+    await Future.delayed(const Duration(milliseconds: 10));
     final tile = tiles[tileIndex];
     if (tile.playerIndex != -1 &&
         tile.playerIndex != currentPlayerIndex &&
@@ -148,9 +149,7 @@ abstract class _GameStore with Store {
       currentPlayer.hasPlayed = true;
     }
 
-    if (hasWinner) {
-      return;
-    }
+    checkWinner();
 
     //Corner Tiles
     if (tile.onCorner) {
@@ -181,17 +180,7 @@ abstract class _GameStore with Store {
         await playNeighbours(tileIndex);
       }
     }
-    if (allPlayersHavePlayed) {
-      //Mark the player who has played and their score is zero as not lost
-      for (int i = 0; i < players.length; i++) {
-        final player = players[i];
-        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
-        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
-        if (playerScore == 0) {
-          player.hasLost = true;
-        }
-      }
-    }
+    markAsLost();
 
     if (changeTurn) {
       nextTurn();
@@ -199,7 +188,25 @@ abstract class _GameStore with Store {
   }
 
   @action
-  void nextTurn() {
+  void markAsLost() {
+    if (allPlayersHavePlayed) {
+      //Mark the player who has played and their score is zero as not lost
+      for (int i = 0; i < players.length; i++) {
+        final player = players[i];
+        if (player.hasLost) {
+          continue;
+        }
+        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
+        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
+        if (playerScore == 0) {
+          player.hasLost = true;
+        }
+      }
+    }
+  }
+
+  @action
+  bool checkWinner() {
     if (allPlayersHavePlayed) {
       //Check if player has won
       List<int> playerScores = [];
@@ -214,8 +221,16 @@ abstract class _GameStore with Store {
           playerScores.where((score) => score == 0).length ==
               players.length - 1) {
         setWinner(currentPlayerIndex);
-        return;
+        return true;
       }
+    }
+    return false;
+  }
+
+  @action
+  void nextTurn() {
+    if (checkWinner()) {
+      return;
     }
     while (true) {
       currentPlayerIndex++;
