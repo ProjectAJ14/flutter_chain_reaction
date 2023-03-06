@@ -57,7 +57,7 @@ abstract class _GameStore with Store {
   Player get winner => players[winnerPlayerIndex];
 
   @observable
-  int boardSize = 9;
+  int boardSize = 8;
 
   @observable
   int playerCount = 2;
@@ -153,47 +153,48 @@ abstract class _GameStore with Store {
       currentPlayer.hasPlayed = true;
     }
 
-    checkWinner();
-
-    //Corner Tiles
-    if (tile.onCorner) {
-      if (tile.isEmpty) {
-        tile.update(value: 1, playerIndex: currentPlayerIndex);
-      } else {
-        tile.update(
-          value: 0,
-          playerIndex: -1,
-          blastPlayerIndex: currentPlayerIndex,
-        );
-        await playNeighbours(tileIndex);
-      }
-    } else if (tile.onEdge) {
-      if (tile.isEmpty) {
-        tile.update(value: 1, playerIndex: currentPlayerIndex);
-      } else if (tile.isLevel1) {
-        tile.update(value: 2, playerIndex: currentPlayerIndex);
-      } else {
-        tile.update(
-          value: 0,
-          playerIndex: -1,
-          blastPlayerIndex: currentPlayerIndex,
-        );
-        await playNeighbours(tileIndex);
+    if (tile.isEmpty) {
+      tile.update(value: 1, playerIndex: currentPlayerIndex);
+      if (changeTurn) {
+        nextTurn();
+        logger.d(
+            'PLAY DURATION: ${DateTime.now().difference(now).inMilliseconds}ms');
+        return;
       }
     } else {
-      if (tile.isEmpty) {
-        tile.update(value: 1, playerIndex: currentPlayerIndex);
-      } else if (tile.isLevel1) {
-        tile.update(value: 2, playerIndex: currentPlayerIndex);
-      } else if (tile.isLevel2) {
-        tile.update(value: 3, playerIndex: currentPlayerIndex);
-      } else {
+      checkWinner();
+      //Corner Tiles
+      if (tile.onCorner) {
         tile.update(
           value: 0,
           playerIndex: -1,
           blastPlayerIndex: currentPlayerIndex,
         );
         await playNeighbours(tileIndex);
+      } else if (tile.onEdge) {
+        if (tile.isLevel1) {
+          tile.update(value: 2, playerIndex: currentPlayerIndex);
+        } else {
+          tile.update(
+            value: 0,
+            playerIndex: -1,
+            blastPlayerIndex: currentPlayerIndex,
+          );
+          await playNeighbours(tileIndex);
+        }
+      } else {
+        if (tile.isLevel1) {
+          tile.update(value: 2, playerIndex: currentPlayerIndex);
+        } else if (tile.isLevel2) {
+          tile.update(value: 3, playerIndex: currentPlayerIndex);
+        } else {
+          tile.update(
+            value: 0,
+            playerIndex: -1,
+            blastPlayerIndex: currentPlayerIndex,
+          );
+          await playNeighbours(tileIndex);
+        }
       }
     }
 

@@ -90,19 +90,19 @@ class GameSetupWidget extends StatelessWidget {
               CupertinoSegmentedControl<int>(
                 unselectedColor: Colors.black,
                 children: const {
-                  6: Text(
+                  5: Text(
                     'SMALL',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  9: Text(
+                  8: Text(
                     'MEDIUM',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  12: Text(
+                  10: Text(
                     'LARGE',
                     style: TextStyle(
                       color: Colors.white,
