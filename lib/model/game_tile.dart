@@ -103,8 +103,8 @@ abstract class _GameTile with Store {
     isBlasted = false;
   }
 
-  String toShow() {
-    return '${onCorner ? 'C' : ''}${onEdge ? 'E' : ''}[$index]($position)=$value,$playerIndex,$neighbors';
+  String info() {
+    return '${onCorner ? 'C' : ''}${onEdge ? 'E' : ''}[$index]\nP=($position)V=$value\nPI=$playerIndex\nN=$neighbors';
   }
 }
 

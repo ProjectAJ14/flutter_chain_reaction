@@ -36,7 +36,7 @@ class GameTileWidget extends StatelessWidget {
                 return Align(
                   alignment: Alignment.topCenter,
                   child: Text(
-                    tile.toShow(),
+                    tile.info(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: size * 0.3,
