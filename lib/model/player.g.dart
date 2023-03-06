@@ -40,11 +40,63 @@ mixin _$Player on _Player, Store {
     });
   }
 
+  late final _$scoreAtom = Atom(name: '_Player.score', context: context);
+
+  @override
+  int get score {
+    _$scoreAtom.reportRead();
+    return super.score;
+  }
+
+  @override
+  set score(int value) {
+    _$scoreAtom.reportWrite(value, super.score, () {
+      super.score = value;
+    });
+  }
+
+  late final _$_PlayerActionController =
+      ActionController(name: '_Player', context: context);
+
+  @override
+  void incrementScore({int? value}) {
+    final _$actionInfo =
+        _$_PlayerActionController.startAction(name: '_Player.incrementScore');
+    try {
+      return super.incrementScore(value: value);
+    } finally {
+      _$_PlayerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void resetScore() {
+    final _$actionInfo =
+        _$_PlayerActionController.startAction(name: '_Player.resetScore');
+    try {
+      return super.resetScore();
+    } finally {
+      _$_PlayerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void decrementScore({int? value}) {
+    final _$actionInfo =
+        _$_PlayerActionController.startAction(name: '_Player.decrementScore');
+    try {
+      return super.decrementScore(value: value);
+    } finally {
+      _$_PlayerActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 hasLost: ${hasLost},
-hasPlayed: ${hasPlayed}
+hasPlayed: ${hasPlayed},
+score: ${score}
     ''';
   }
 }

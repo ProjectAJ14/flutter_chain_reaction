@@ -15,6 +15,24 @@ abstract class _Player with Store {
   @observable
   bool hasPlayed = false;
 
+  @observable
+  int score = 0;
+
+  @action
+  void incrementScore({int? value}) {
+    score += value ?? 1;
+  }
+
+  @action
+  void resetScore() {
+    score = 0;
+  }
+
+  @action
+  void decrementScore({int? value}) {
+    score -= value ?? 1;
+  }
+
   _Player({
     required this.name,
     required this.color,

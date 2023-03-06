@@ -155,6 +155,7 @@ abstract class _GameStore with Store {
     }
 
     if (tile.isEmpty) {
+      currentPlayer.incrementScore();
       tile.update(value: 1, playerIndex: currentPlayerIndex);
       if (changeTurn) {
         nextTurn();
@@ -166,6 +167,11 @@ abstract class _GameStore with Store {
       checkWinner();
       //Corner Tiles
       if (tile.onCorner) {
+        if (tile.playerIndex == currentPlayerIndex) {
+          currentPlayer.decrementScore();
+        } else {
+          players[tile.playerIndex].decrementScore();
+        }
         tile.update(
           value: 0,
           playerIndex: -1,
@@ -174,8 +180,19 @@ abstract class _GameStore with Store {
         await playNeighbours(tileIndex);
       } else if (tile.onEdge) {
         if (tile.isLevel1) {
+          if (tile.playerIndex == currentPlayerIndex) {
+            currentPlayer.incrementScore();
+          } else {
+            currentPlayer.incrementScore(value: 2);
+            players[tile.playerIndex].decrementScore();
+          }
           tile.update(value: 2, playerIndex: currentPlayerIndex);
         } else {
+          if (tile.playerIndex == currentPlayerIndex) {
+            currentPlayer.decrementScore(value: 2);
+          } else {
+            players[tile.playerIndex].decrementScore(value: 2);
+          }
           tile.update(
             value: 0,
             playerIndex: -1,
@@ -185,10 +202,27 @@ abstract class _GameStore with Store {
         }
       } else {
         if (tile.isLevel1) {
+          if (tile.playerIndex == currentPlayerIndex) {
+            currentPlayer.incrementScore();
+          } else {
+            currentPlayer.incrementScore(value: 2);
+            players[tile.playerIndex].decrementScore(value: 1);
+          }
           tile.update(value: 2, playerIndex: currentPlayerIndex);
         } else if (tile.isLevel2) {
+          if (tile.playerIndex == currentPlayerIndex) {
+            currentPlayer.incrementScore();
+          } else {
+            currentPlayer.incrementScore(value: 3);
+            players[tile.playerIndex].decrementScore(value: 2);
+          }
           tile.update(value: 3, playerIndex: currentPlayerIndex);
         } else {
+          if (tile.playerIndex == currentPlayerIndex) {
+            currentPlayer.decrementScore(value: 3);
+          } else {
+            players[tile.playerIndex].decrementScore(value: 3);
+          }
           tile.update(
             value: 0,
             playerIndex: -1,
@@ -203,8 +237,6 @@ abstract class _GameStore with Store {
       await Future.delayed(const Duration(milliseconds: 5));
     }
 
-    markAsLost();
-
     if (changeTurn) {
       if (checkWinner()) {
         return;
@@ -216,40 +248,25 @@ abstract class _GameStore with Store {
   }
 
   @action
-  void markAsLost() {
-    if (allPlayersHavePlayed) {
-      _allPlayersHavePlayed = true;
-      //Mark the player who has played and their score is zero as not lost
-      for (int i = 0; i < players.length; i++) {
-        final player = players[i];
-        if (player.hasLost) {
-          continue;
-        }
-        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
-        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
-        if (playerScore == 0) {
-          player.hasLost = true;
-        }
-      }
-    }
-  }
-
-  @action
   bool checkWinner() {
     if (allPlayersHavePlayed) {
       _allPlayersHavePlayed = true;
-      //Check if player has won
-      List<int> playerScores = [];
-      for (int i = 0; i < players.length; i++) {
-        final playerTiles = tiles.where((tile) => tile.playerIndex == i);
-        int playerScore = playerTiles.isEmpty ? 0 : playerTiles.length;
-        playerScores.add(playerScore);
-      }
 
+      List<int> playerScores = [];
+      //Mark the player who has played and their score is zero as not lost
+      for (int i = 0; i < players.length; i++) {
+        final player = players[i];
+        playerScores.add(player.score);
+        if (player.hasLost || i == currentPlayerIndex) {
+          continue;
+        } else if (player.hasPlayed && player.score == 0) {
+          player.hasLost = true;
+        }
+      }
       //Check if the other player has zero tiles and the current player has more than 0 tiles
       if (playerScores[currentPlayerIndex] > 0 &&
           playerScores.where((score) => score == 0).length ==
-              players.length - 1) {
+              playerScores.length - 1) {
         setWinner(currentPlayerIndex);
         return true;
       }

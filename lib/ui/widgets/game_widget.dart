@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +58,41 @@ class GameWidget extends StatelessWidget {
                           fontSize: 20,
                         ),
                       ),
-                    )
+                    ),
+                    Observer(builder: (context) {
+                      //Show score
+                      final players = store.players;
+                      return Text(
+                        players.map((e) => e.score).toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      );
+                    }),
+                    Observer(builder: (context) {
+                      final players = store.players;
+                      //Show score
+                      final tiles = store.tiles;
+                      var list = [];
+                      for (int i = 0; i < players.length; i++) {
+                        int count = 0;
+                        for (var tile in tiles) {
+                          if (tile.playerIndex == i) {
+                            count = count + tile.value;
+                          }
+                        }
+                        list.add(count);
+                      }
+
+                      return Text(
+                        list.map((e) => e).toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -74,7 +110,7 @@ class GameWidget extends StatelessWidget {
                     itemBuilder: (BuildContext ctx, index) {
                       final tile = tiles[index];
                       return GameTileWidget(
-                        size: itemWidth * 0.3,
+                        size: (math.min(itemHeight, itemWidth)) * 0.3,
                         tile: tile,
                         parentSize: Size(itemWidth, itemHeight),
                         onTap: () => store.play(index),
