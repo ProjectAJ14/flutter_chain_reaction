@@ -7,15 +7,11 @@ part 'game_tile.g.dart';
 class GameTile = _GameTile with _$GameTile;
 
 abstract class _GameTile with Store {
-  int index = 0;
-
   @observable
   int value = 0;
 
   @observable
   int playerIndex = -1;
-
-  int boardSize = 0;
 
   @observable
   bool isBlasted = false;
@@ -23,7 +19,11 @@ abstract class _GameTile with Store {
   @observable
   int blastPlayerIndex = 0;
 
-  @observable
+  int index = 0;
+  int boardSize = 0;
+  bool onCorner = false;
+  bool onEdge = false;
+  List<int> neighbors = <int>[];
   Position position = Position(x: 0, y: 0);
 
   _GameTile({
@@ -36,39 +36,20 @@ abstract class _GameTile with Store {
       x: index ~/ boardSize,
       y: index % boardSize,
     );
-  }
+    onCorner = position.x == 0 && position.y == 0 ||
+        position.x == (boardSize - 1) && position.y == 0 ||
+        position.x == (boardSize - 1) && position.y == (boardSize - 1) ||
+        position.x == 0 && position.y == (boardSize - 1);
 
-  @computed
-  bool get onCorner =>
-      position.x == 0 && position.y == 0 ||
-      position.x == (boardSize - 1) && position.y == 0 ||
-      position.x == (boardSize - 1) && position.y == (boardSize - 1) ||
-      position.x == 0 && position.y == (boardSize - 1);
+    onEdge = (position.x == 0 &&
+            (position.y != 0 || position.y != (boardSize - 1))) ||
+        (position.x == (boardSize - 1) &&
+            (position.y != 0 || position.y != (boardSize - 1))) ||
+        (position.y == 0 &&
+            (position.x != 0 || position.x != (boardSize - 1))) ||
+        (position.y == (boardSize - 1) &&
+            (position.x != 0 || position.x != (boardSize - 1)));
 
-  @computed
-  bool get onEdge =>
-      (position.x == 0 && (position.y != 0 || position.y != (boardSize - 1))) ||
-      (position.x == (boardSize - 1) &&
-          (position.y != 0 || position.y != (boardSize - 1))) ||
-      (position.y == 0 && (position.x != 0 || position.x != (boardSize - 1))) ||
-      (position.y == (boardSize - 1) &&
-          (position.x != 0 || position.x != (boardSize - 1)));
-
-  @computed
-  bool get isEmpty => value == 0;
-
-  @computed
-  bool get isLevel1 => value == 1;
-
-  @computed
-  bool get isLevel2 => value == 2;
-
-  @computed
-  bool get isLevel3 => value == 3;
-
-  @computed
-  List<int> get neighbors {
-    final neighbors = <int>[];
     if (position.x > 0) {
       neighbors.add(index - boardSize);
     }
@@ -81,8 +62,19 @@ abstract class _GameTile with Store {
     if (position.y < (boardSize - 1)) {
       neighbors.add(index + 1);
     }
-    return neighbors;
   }
+
+  @computed
+  bool get isEmpty => value == 0;
+
+  @computed
+  bool get isLevel1 => value == 1;
+
+  @computed
+  bool get isLevel2 => value == 2;
+
+  @computed
+  bool get isLevel3 => value == 3;
 
   @action
   void update({

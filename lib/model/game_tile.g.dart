@@ -9,18 +9,6 @@ part of 'game_tile.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$GameTile on _GameTile, Store {
-  Computed<bool>? _$onCornerComputed;
-
-  @override
-  bool get onCorner => (_$onCornerComputed ??=
-          Computed<bool>(() => super.onCorner, name: '_GameTile.onCorner'))
-      .value;
-  Computed<bool>? _$onEdgeComputed;
-
-  @override
-  bool get onEdge => (_$onEdgeComputed ??=
-          Computed<bool>(() => super.onEdge, name: '_GameTile.onEdge'))
-      .value;
   Computed<bool>? _$isEmptyComputed;
 
   @override
@@ -45,13 +33,6 @@ mixin _$GameTile on _GameTile, Store {
   bool get isLevel3 => (_$isLevel3Computed ??=
           Computed<bool>(() => super.isLevel3, name: '_GameTile.isLevel3'))
       .value;
-  Computed<List<int>>? _$neighborsComputed;
-
-  @override
-  List<int> get neighbors =>
-      (_$neighborsComputed ??= Computed<List<int>>(() => super.neighbors,
-              name: '_GameTile.neighbors'))
-          .value;
 
   late final _$valueAtom = Atom(name: '_GameTile.value', context: context);
 
@@ -116,22 +97,6 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
-  late final _$positionAtom =
-      Atom(name: '_GameTile.position', context: context);
-
-  @override
-  Position get position {
-    _$positionAtom.reportRead();
-    return super.position;
-  }
-
-  @override
-  set position(Position value) {
-    _$positionAtom.reportWrite(value, super.position, () {
-      super.position = value;
-    });
-  }
-
   late final _$blastAsyncAction =
       AsyncAction('_GameTile.blast', context: context);
 
@@ -164,14 +129,10 @@ value: ${value},
 playerIndex: ${playerIndex},
 isBlasted: ${isBlasted},
 blastPlayerIndex: ${blastPlayerIndex},
-position: ${position},
-onCorner: ${onCorner},
-onEdge: ${onEdge},
 isEmpty: ${isEmpty},
 isLevel1: ${isLevel1},
 isLevel2: ${isLevel2},
-isLevel3: ${isLevel3},
-neighbors: ${neighbors}
+isLevel3: ${isLevel3}
     ''';
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_chain_reaction/ui/widgets/blast_widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -38,14 +37,13 @@ class GameTileWidget extends StatelessWidget {
                 parentSize: parentSize,
               ),
             ),
-          ).animate(delay: const Duration(milliseconds: 100)).scale(),
+          ),
           Observer(builder: (context) {
             final store = Provider.of<GameStore>(context);
             if (!tile.isBlasted) {
               return const SizedBox();
             }
             return BlastWidget(
-              size: size * 5,
               color: store.byPlayerIndex(tile.blastPlayerIndex),
             );
           })

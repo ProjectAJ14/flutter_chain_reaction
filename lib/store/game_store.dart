@@ -16,8 +16,6 @@ const List<MaterialColor> primaries = <MaterialColor>[
   Colors.yellow,
   Colors.purple,
   Colors.orange,
-  Colors.teal,
-  Colors.cyan,
 ];
 
 class GameStore = _GameStore with _$GameStore;
@@ -32,8 +30,11 @@ abstract class _GameStore with Store {
   @computed
   Color get currentPlayerColor => players[currentPlayerIndex].color;
 
+  bool? _allPlayersHavePlayed;
+
   @computed
   bool get allPlayersHavePlayed =>
+      _allPlayersHavePlayed ??
       players.where((player) => !player.hasPlayed).isEmpty;
 
   Color byPlayerIndex(int playerIndex) {
@@ -56,7 +57,7 @@ abstract class _GameStore with Store {
   Player get winner => players[winnerPlayerIndex];
 
   @observable
-  int boardSize = 10;
+  int boardSize = 9;
 
   @observable
   int playerCount = 2;
@@ -113,6 +114,8 @@ abstract class _GameStore with Store {
     currentPlayerIndex = 0;
     //Reset status
     status = GameStatus.init;
+    //Reset all players have played
+    _allPlayersHavePlayed = null;
   }
 
   @action
@@ -134,9 +137,10 @@ abstract class _GameStore with Store {
     bool changeTurn = true,
     bool autoPlayed = false,
   }) async {
+    DateTime now = DateTime.now();
     logger.d('PLAY: $tileIndex${autoPlayed ? ' (auto)' : ''}'
         '${changeTurn ? '' : ' (no change turn)'}');
-    await Future.delayed(const Duration(milliseconds: 10));
+
     final tile = tiles[tileIndex];
     if (tile.playerIndex != -1 &&
         tile.playerIndex != currentPlayerIndex &&
@@ -192,16 +196,27 @@ abstract class _GameStore with Store {
         await playNeighbours(tileIndex);
       }
     }
+
+    if (autoPlayed) {
+      await Future.delayed(const Duration(milliseconds: 5));
+    }
+
     markAsLost();
 
     if (changeTurn) {
+      if (checkWinner()) {
+        return;
+      }
       nextTurn();
+      logger.d(
+          'PLAY DURATION: ${DateTime.now().difference(now).inMilliseconds}ms');
     }
   }
 
   @action
   void markAsLost() {
     if (allPlayersHavePlayed) {
+      _allPlayersHavePlayed = true;
       //Mark the player who has played and their score is zero as not lost
       for (int i = 0; i < players.length; i++) {
         final player = players[i];
@@ -220,6 +235,7 @@ abstract class _GameStore with Store {
   @action
   bool checkWinner() {
     if (allPlayersHavePlayed) {
+      _allPlayersHavePlayed = true;
       //Check if player has won
       List<int> playerScores = [];
       for (int i = 0; i < players.length; i++) {
@@ -241,9 +257,6 @@ abstract class _GameStore with Store {
 
   @action
   void nextTurn() {
-    if (checkWinner()) {
-      return;
-    }
     while (true) {
       currentPlayerIndex++;
       if (currentPlayerIndex >= players.length) {

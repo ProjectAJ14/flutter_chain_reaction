@@ -72,18 +72,6 @@ class GameSetupWidget extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  7: Text(
-                    'SEVEN',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  8: Text(
-                    'EIGHT',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
                 },
                 onValueChanged: (value) => store.setPlayerCount(value),
                 groupValue: store.playerCount,
@@ -102,19 +90,19 @@ class GameSetupWidget extends StatelessWidget {
               CupertinoSegmentedControl<int>(
                 unselectedColor: Colors.black,
                 children: const {
-                  5: Text(
+                  6: Text(
                     'SMALL',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  10: Text(
+                  9: Text(
                     'MEDIUM',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  15: Text(
+                  12: Text(
                     'LARGE',
                     style: TextStyle(
                       color: Colors.white,

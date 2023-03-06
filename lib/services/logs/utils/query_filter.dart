@@ -7,6 +7,6 @@ class QueryFilter implements TalkerLoggerFilter {
 
   @override
   bool shouldLog(dynamic msg, LogLevel level) {
-    return msg.toString().toLowerCase().contains(query);
+    return msg.toString().toLowerCase().contains(query.toLowerCase());
   }
 }

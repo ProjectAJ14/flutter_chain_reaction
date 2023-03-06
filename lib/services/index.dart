@@ -5,7 +5,10 @@ import 'logs/log_service_impl.dart';
 final getIt = GetIt.instance;
 
 void initDependencies() {
-  getIt.registerSingleton<LogService>(LogServiceImpl(false));
+  getIt.registerSingleton<LogService>(LogServiceImpl(
+    false,
+    query: 'duration',
+  ));
 }
 
 LogService get logger => getIt.get();
