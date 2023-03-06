@@ -102,13 +102,13 @@ mixin _$GameStore on _GameStore, Store {
       Atom(name: '_GameStore.boardSize', context: context);
 
   @override
-  int get boardSize {
+  BoardSize get boardSize {
     _$boardSizeAtom.reportRead();
     return super.boardSize;
   }
 
   @override
-  set boardSize(int value) {
+  set boardSize(BoardSize value) {
     _$boardSizeAtom.reportWrite(value, super.boardSize, () {
       super.boardSize = value;
     });
@@ -179,7 +179,7 @@ mixin _$GameStore on _GameStore, Store {
   }
 
   @override
-  void setBoardSize(int value) {
+  void setBoardSize(BoardSize value) {
     final _$actionInfo = _$_GameStoreActionController.startAction(
         name: '_GameStore.setBoardSize');
     try {

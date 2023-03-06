@@ -19,23 +19,25 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Provider(
       create: (context) => GameStore(),
-      child: Scaffold(
-        body: Observer(
-          builder: (context) {
-            final store = Provider.of<GameStore>(context);
-            if (store.status == GameStatus.init) {
-              return const GameSetupWidget();
-            }
-            return Stack(
-              children: [
-                GameWidget(
-                  boardSize: store.boardSize,
-                  color: store.currentPlayerColor,
-                ),
-                if (store.hasWinner) const GameOverWidget(),
-              ],
-            );
-          },
+      child: SafeArea(
+        child: Scaffold(
+          body: Observer(
+            builder: (context) {
+              final store = Provider.of<GameStore>(context);
+              if (store.status == GameStatus.init) {
+                return const GameSetupWidget();
+              }
+              return Stack(
+                children: [
+                  GameWidget(
+                    boardSize: store.boardSize,
+                    color: store.currentPlayerColor,
+                  ),
+                  if (store.hasWinner) const GameOverWidget(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

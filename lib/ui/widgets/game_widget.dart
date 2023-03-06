@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/board_size.dart';
 import '../../store/game_store.dart';
 import 'game_tile_widget.dart';
 
@@ -13,7 +14,7 @@ class GameWidget extends StatelessWidget {
   });
 
   final Color color;
-  final int boardSize;
+  final BoardSize boardSize;
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +23,18 @@ class GameWidget extends StatelessWidget {
       final width = constraints.maxWidth;
       const gutter = 4.0;
       const margin = 80.0;
-      final gutterSpacing = gutter * (boardSize + 1);
-      final itemWidth = (width - gutterSpacing) / boardSize;
-      final itemHeight = (height - gutterSpacing - margin) / boardSize;
+      final gutterSpacingW = gutter * (boardSize.width + 1);
+      final gutterSpacingH = gutter * (boardSize.height + 1);
+      final itemWidth = (width - gutterSpacingW) / boardSize.width;
+      final itemHeight = (height - gutterSpacingH - margin) / boardSize.height;
       final store = Provider.of<GameStore>(context);
       return Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            colors: [Colors.grey.withOpacity(0.9), color],
-            radius: 1,
-            focal: Alignment.topCenter,
+            colors: [
+              color.withOpacity(0.5),
+              color,
+            ],
           ),
         ),
         child: Container(
@@ -62,7 +65,7 @@ class GameWidget extends StatelessWidget {
                 return Flexible(
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: width / boardSize,
+                      maxCrossAxisExtent: width / boardSize.width,
                       childAspectRatio: itemWidth / itemHeight,
                       crossAxisSpacing: gutter,
                       mainAxisSpacing: gutter,

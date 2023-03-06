@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/board_size.dart';
 import '../../store/game_store.dart';
 
 class GameSetupWidget extends StatelessWidget {
@@ -87,22 +88,22 @@ class GameSetupWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              CupertinoSegmentedControl<int>(
+              CupertinoSegmentedControl<BoardSize>(
                 unselectedColor: Colors.black,
                 children: const {
-                  5: Text(
+                  BoardSize(5, 7): Text(
                     'SMALL',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  8: Text(
+                  BoardSize(6, 9): Text(
                     'MEDIUM',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  10: Text(
+                  BoardSize(8, 12): Text(
                     'LARGE',
                     style: TextStyle(
                       color: Colors.white,

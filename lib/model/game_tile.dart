@@ -1,6 +1,7 @@
 import 'package:mobx/mobx.dart';
 
 import '../services/index.dart';
+import 'board_size.dart';
 
 part 'game_tile.g.dart';
 
@@ -20,7 +21,7 @@ abstract class _GameTile with Store {
   int blastPlayerIndex = 0;
 
   int index = 0;
-  int boardSize = 0;
+  BoardSize boardSize = const BoardSize(6, 9);
   bool onCorner = false;
   bool onEdge = false;
   List<int> neighbors = <int>[];
@@ -33,34 +34,31 @@ abstract class _GameTile with Store {
     required this.playerIndex,
   }) {
     position = Position(
-      x: index ~/ boardSize,
-      y: index % boardSize,
+      x: index % boardSize.width,
+      y: index ~/ boardSize.width,
     );
     onCorner = position.x == 0 && position.y == 0 ||
-        position.x == (boardSize - 1) && position.y == 0 ||
-        position.x == (boardSize - 1) && position.y == (boardSize - 1) ||
-        position.x == 0 && position.y == (boardSize - 1);
+        position.x == boardSize.width - 1 && position.y == 0 ||
+        position.x == 0 && position.y == boardSize.height - 1 ||
+        position.x == boardSize.width - 1 && position.y == boardSize.height - 1;
 
-    onEdge = (position.x == 0 &&
-            (position.y != 0 || position.y != (boardSize - 1))) ||
-        (position.x == (boardSize - 1) &&
-            (position.y != 0 || position.y != (boardSize - 1))) ||
-        (position.y == 0 &&
-            (position.x != 0 || position.x != (boardSize - 1))) ||
-        (position.y == (boardSize - 1) &&
-            (position.x != 0 || position.x != (boardSize - 1)));
+    onEdge = position.x == 0 ||
+        position.x == boardSize.width - 1 ||
+        position.y == 0 ||
+        position.y == boardSize.height - 1;
 
+    neighbors = <int>[];
     if (position.x > 0) {
-      neighbors.add(index - boardSize);
-    }
-    if (position.x < (boardSize - 1)) {
-      neighbors.add(index + boardSize);
-    }
-    if (position.y > 0) {
       neighbors.add(index - 1);
     }
-    if (position.y < (boardSize - 1)) {
+    if (position.x < boardSize.width - 1) {
       neighbors.add(index + 1);
+    }
+    if (position.y > 0) {
+      neighbors.add(index - boardSize.width);
+    }
+    if (position.y < boardSize.height - 1) {
+      neighbors.add(index + boardSize.width);
     }
   }
 
@@ -106,7 +104,7 @@ abstract class _GameTile with Store {
   }
 
   String toShow() {
-    return '${onCorner ? 'C' : ''}${onEdge ? 'E' : ''}($position)=$value,$playerIndex,$neighbors';
+    return '${onCorner ? 'C' : ''}${onEdge ? 'E' : ''}[$index]($position)=$value,$playerIndex,$neighbors';
   }
 }
 

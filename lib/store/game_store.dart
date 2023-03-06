@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
+import '../model/board_size.dart';
 import '../model/game_tile.dart';
 import '../model/player.dart';
 import '../services/index.dart';
@@ -57,7 +58,7 @@ abstract class _GameStore with Store {
   Player get winner => players[winnerPlayerIndex];
 
   @observable
-  int boardSize = 8;
+  BoardSize boardSize = const BoardSize(6, 9);
 
   @observable
   int playerCount = 2;
@@ -69,7 +70,7 @@ abstract class _GameStore with Store {
   void init() {
     tiles = ObservableList.of(
       List.generate(
-        boardSize * boardSize,
+        boardSize.width * boardSize.height,
         (index) => GameTile(
           index: index,
           boardSize: boardSize,
@@ -91,7 +92,7 @@ abstract class _GameStore with Store {
   }
 
   @action
-  void setBoardSize(int value) {
+  void setBoardSize(BoardSize value) {
     logger.d('SET BOARD SIZE: $value');
     boardSize = value;
   }
