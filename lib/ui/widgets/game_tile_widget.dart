@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chain_reaction/ui/widgets/blast_widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
 
 import '../../model/game_tile.dart';
-import '../../store/game_store.dart';
 import 'game_icon_widget.dart';
 
 class GameTileWidget extends StatelessWidget {
@@ -52,12 +50,12 @@ class GameTileWidget extends StatelessWidget {
               ),
             ),
             Observer(builder: (context) {
-              final store = Provider.of<GameStore>(context);
               if (!tile.isBlasted) {
                 return const SizedBox();
               }
               return BlastWidget(
-                color: store.byPlayerIndex(tile.blastPlayerIndex),
+                size: parentSize,
+                index: tile.blastPlayerIndex,
               );
             })
           ],

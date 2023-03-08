@@ -47,78 +47,59 @@ class GameWidget extends StatelessWidget {
               SizedBox(
                 height: margin,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: store.reset,
-                      child: const Text(
-                        'Reset',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
+                    Observer(builder: (context) {
+                      return SizedBox(
+                          width: margin,
+                          height: margin,
+                          child: store.isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const SizedBox.shrink());
+                    }),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: store.reset,
+                            child: const Text(
+                              'Reset',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Observer(builder: (context) {
-                      //Show score
-                      final players = store.players;
-                      return Text(
-                        players.map((e) => e.score).toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      );
-                    }),
-                    Observer(builder: (context) {
-                      final players = store.players;
-                      //Show score
-                      final tiles = store.tiles;
-                      var list = [];
-                      for (int i = 0; i < players.length; i++) {
-                        int count = 0;
-                        for (var tile in tiles) {
-                          if (tile.playerIndex == i) {
-                            count = count + tile.value;
-                          }
-                        }
-                        list.add(count);
-                      }
-
-                      return Text(
-                        list.map((e) => e).toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      );
-                    }),
                   ],
                 ),
               ),
-              Observer(builder: (context) {
-                final tiles = store.tiles;
-                return Flexible(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: width / boardSize.width,
-                      childAspectRatio: itemWidth / itemHeight,
-                      crossAxisSpacing: gutter,
-                      mainAxisSpacing: gutter,
-                    ),
-                    itemCount: tiles.length,
-                    itemBuilder: (BuildContext ctx, index) {
-                      final tile = tiles[index];
-                      return GameTileWidget(
-                        size: (math.min(itemHeight, itemWidth)) * 0.3,
-                        tile: tile,
-                        parentSize: Size(itemWidth, itemHeight),
-                        onTap: () => store.play(index),
-                      );
-                    },
+              Flexible(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: width / boardSize.width,
+                    childAspectRatio: itemWidth / itemHeight,
+                    crossAxisSpacing: gutter,
+                    mainAxisSpacing: gutter,
                   ),
-                );
-              }),
+                  itemCount: store.tiles.length,
+                  itemBuilder: (BuildContext ctx, index) {
+                    final tile = store.tiles[index];
+                    return GameTileWidget(
+                      size: (math.min(itemHeight, itemWidth)) * 0.3,
+                      tile: tile,
+                      parentSize: Size(itemWidth, itemHeight),
+                      onTap: () => store.play(index),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),

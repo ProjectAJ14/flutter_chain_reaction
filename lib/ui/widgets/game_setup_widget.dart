@@ -61,18 +61,6 @@ class GameSetupWidget extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  5: Text(
-                    'FIVE',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  6: Text(
-                    'SIX',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
                 },
                 onValueChanged: (value) => store.setPlayerCount(value),
                 groupValue: store.playerCount,
@@ -92,23 +80,17 @@ class GameSetupWidget extends StatelessWidget {
                 unselectedColor: Colors.black,
                 children: const {
                   BoardSize(5, 7): Text(
-                    'SMALL',
+                    '5X7',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
                   BoardSize(6, 9): Text(
-                    'MEDIUM',
+                    '6X9',
                     style: TextStyle(
                       color: Colors.white,
                     ),
-                  ),
-                  BoardSize(8, 12): Text(
-                    'LARGE',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  )
                 },
                 onValueChanged: (value) => store.setBoardSize(value),
                 groupValue: store.boardSize,

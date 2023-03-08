@@ -10,13 +10,11 @@ part 'game_store.g.dart';
 
 enum GameStatus { init, play }
 
-const List<MaterialColor> primaries = <MaterialColor>[
-  Colors.red,
-  Colors.green,
-  Colors.blue,
-  Colors.yellow,
-  Colors.purple,
-  Colors.orange,
+const List<Color> primaries = <Color>[
+  Color(0xFF1B5E20),
+  Color(0xFFB71C1C),
+  Color(0xFF0D47A1),
+  Color(0xFFF57F17),
 ];
 
 class GameStore = _GameStore with _$GameStore;
@@ -24,6 +22,9 @@ class GameStore = _GameStore with _$GameStore;
 abstract class _GameStore with Store {
   @observable
   GameStatus status = GameStatus.init;
+
+  @observable
+  bool isLoading = false;
 
   @observable
   ObservableList<Player> players = ObservableList<Player>();
@@ -104,6 +105,18 @@ abstract class _GameStore with Store {
   }
 
   @action
+  void showLoading() {
+    logger.d('SHOW LOADING');
+    isLoading = true;
+  }
+
+  @action
+  void hideLoading() {
+    logger.d('HIDE LOADING');
+    isLoading = false;
+  }
+
+  @action
   void reset() {
     //Reset players
     players.clear();
@@ -128,12 +141,22 @@ abstract class _GameStore with Store {
   Future<void> playNeighbours(int tileIndex) async {
     final tile = tiles[tileIndex];
     for (var neighborIndex in tile.neighbors) {
-      await play(neighborIndex, changeTurn: false, autoPlayed: true);
+      await _play(neighborIndex, changeTurn: false, autoPlayed: true);
     }
   }
 
+  Future<void> play(int tileIndex) async {
+    if (isLoading) {
+      logger.d('PLAY: $tileIndex (loading)');
+      return;
+    }
+    showLoading();
+    await _play(tileIndex);
+    hideLoading();
+  }
+
   @action
-  Future<void> play(
+  Future<void> _play(
     int tileIndex, {
     bool changeTurn = true,
     bool autoPlayed = false,
@@ -234,7 +257,7 @@ abstract class _GameStore with Store {
     }
 
     if (autoPlayed) {
-      await Future.delayed(const Duration(milliseconds: 5));
+      await Future.delayed(const Duration(milliseconds: 50));
     }
 
     if (changeTurn) {
@@ -277,6 +300,7 @@ abstract class _GameStore with Store {
   @action
   void nextTurn() {
     while (true) {
+      logger.d('NEXT TURN[$currentPlayerIndex]');
       currentPlayerIndex++;
       if (currentPlayerIndex >= players.length) {
         currentPlayerIndex = 0;

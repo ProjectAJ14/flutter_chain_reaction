@@ -51,6 +51,22 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
+  late final _$isLoadingAtom =
+      Atom(name: '_GameStore.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   late final _$playersAtom = Atom(name: '_GameStore.players', context: context);
 
   @override
@@ -158,10 +174,10 @@ mixin _$GameStore on _GameStore, Store {
       AsyncAction('_GameStore.play', context: context);
 
   @override
-  Future<void> play(int tileIndex,
+  Future<void> _play(int tileIndex,
       {bool changeTurn = true, bool autoPlayed = false}) {
     return _$playAsyncAction.run(() =>
-        super.play(tileIndex, changeTurn: changeTurn, autoPlayed: autoPlayed));
+        super._play(tileIndex, changeTurn: changeTurn, autoPlayed: autoPlayed));
   }
 
   late final _$_GameStoreActionController =
@@ -195,6 +211,28 @@ mixin _$GameStore on _GameStore, Store {
         name: '_GameStore.setPlayerCount');
     try {
       return super.setPlayerCount(value);
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void showLoading() {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.showLoading');
+    try {
+      return super.showLoading();
+    } finally {
+      _$_GameStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void hideLoading() {
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+        name: '_GameStore.hideLoading');
+    try {
+      return super.hideLoading();
     } finally {
       _$_GameStoreActionController.endAction(_$actionInfo);
     }
@@ -248,6 +286,7 @@ mixin _$GameStore on _GameStore, Store {
   String toString() {
     return '''
 status: ${status},
+isLoading: ${isLoading},
 players: ${players},
 currentPlayerIndex: ${currentPlayerIndex},
 winnerPlayerIndex: ${winnerPlayerIndex},
