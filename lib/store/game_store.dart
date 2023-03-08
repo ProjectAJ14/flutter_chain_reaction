@@ -131,6 +131,8 @@ abstract class _GameStore with Store {
     status = GameStatus.init;
     //Reset all players have played
     _allPlayersHavePlayed = null;
+    //Reset loading
+    isLoading = false;
   }
 
   @action
