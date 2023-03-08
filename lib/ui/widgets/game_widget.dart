@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:neopop/neopop.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/board_size.dart';
@@ -77,14 +78,37 @@ class GameWidget extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: store.reset,
-                            child: const Text(
-                              'Reset',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
+                          NeoPopTiltedButton(
+                            color: Colors.white,
+                            onTapUp: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Reset Game'),
+                                  content: const Text('Are you sure?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        store.reset();
+                                      },
+                                      child: const Text('Reset'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 10,
                               ),
+                              child: Text('RESET'),
                             ),
                           ),
                           const SizedBox(width: 10),
