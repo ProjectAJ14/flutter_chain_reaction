@@ -74,6 +74,23 @@ abstract class _GameTile with Store {
   @computed
   bool get isLevel3 => value == 3;
 
+  @computed
+  bool get canBlast {
+    if (isEmpty) {
+      return false;
+    }
+    if (isLevel1 && onCorner) {
+      return true;
+    }
+    if (isLevel2 && onEdge) {
+      return true;
+    }
+    if (isLevel3) {
+      return true;
+    }
+    return false;
+  }
+
   @action
   void update({
     int? value,

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// flutter_animate
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_chain_reaction/ui/widgets/blast_widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -43,11 +45,26 @@ class GameTileWidget extends StatelessWidget {
                 );
               }),
             Center(
-              child: GameIconWidget(
-                size: size,
-                tile: tile,
-                parentSize: parentSize,
-              ),
+              child: tile.canBlast
+                  ? Animate(
+                      delay: const Duration(milliseconds: 100),
+                      effects: [
+                        ShakeEffect(
+                          hz: size / 4,
+                          offset: Offset(size / 4, 0),
+                        ),
+                      ],
+                      child: GameIconWidget(
+                        size: size,
+                        tile: tile,
+                        parentSize: parentSize,
+                      ),
+                    )
+                  : GameIconWidget(
+                      size: size,
+                      tile: tile,
+                      parentSize: parentSize,
+                    ),
             ),
             Observer(builder: (context) {
               if (!tile.isBlasted) {

@@ -23,7 +23,7 @@ class GameWidget extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final height = constraints.maxHeight;
       final width = constraints.maxWidth;
-      const gutter = 4.0;
+      const gutter = 2.0;
       const margin = 80.0;
       final gutterSpacingW = gutter * (boardSize.width + 1);
       final gutterSpacingH = gutter * (boardSize.height + 1);
@@ -50,8 +50,8 @@ class GameWidget extends StatelessWidget {
                   children: [
                     Observer(builder: (context) {
                       return SizedBox(
-                          width: margin,
-                          height: margin,
+                          width: margin / 2,
+                          height: margin / 2,
                           child: store.isLoading
                               ? const Center(
                                   child: CircularProgressIndicator(
@@ -60,10 +60,22 @@ class GameWidget extends StatelessWidget {
                                 )
                               : const SizedBox.shrink());
                     }),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          const Expanded(
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/ns-logo-dark-f.png',
+                                ),
+                                height: margin / 2,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: store.reset,
                             child: const Text(
@@ -74,6 +86,7 @@ class GameWidget extends StatelessWidget {
                               ),
                             ),
                           ),
+                          const SizedBox(width: 10),
                         ],
                       ),
                     ),
