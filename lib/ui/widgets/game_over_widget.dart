@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neopop/neopop.dart';
 import 'package:provider/provider.dart';
 
 import './winner_confetti.dart';
@@ -31,9 +32,16 @@ class GameOverWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Center(
-                  child: ElevatedButton(
-                    onPressed: store.reset,
-                    child: const Text('PLAY AGAIN'),
+                  child: NeoPopTiltedButton(
+                    color: Colors.white,
+                    onTapUp: store.reset,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 50,
+                        vertical: 10,
+                      ),
+                      child: Text('PLAY AGAIN'),
+                    ),
                   ),
                 ),
               ],
