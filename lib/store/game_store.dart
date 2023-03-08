@@ -17,6 +17,7 @@ const List<Color> primaries = <Color>[
   Color(0xFFF57F17),
 ];
 
+// ignore: library_private_types_in_public_api
 class GameStore = _GameStore with _$GameStore;
 
 abstract class _GameStore with Store {

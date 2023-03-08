@@ -3,6 +3,7 @@ import 'package:mobx/mobx.dart';
 
 part 'player.g.dart';
 
+// ignore: library_private_types_in_public_api
 class Player = _Player with _$Player;
 
 abstract class _Player with Store {

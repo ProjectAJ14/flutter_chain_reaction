@@ -5,6 +5,7 @@ import 'board_size.dart';
 
 part 'game_tile.g.dart';
 
+// ignore: library_private_types_in_public_api
 class GameTile = _GameTile with _$GameTile;
 
 abstract class _GameTile with Store {
