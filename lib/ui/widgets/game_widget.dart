@@ -44,6 +44,7 @@ class GameWidget extends StatelessWidget {
           padding: const EdgeInsets.all(gutter),
           child: Column(
             children: [
+              const SizedBox(width: 10),
               SizedBox(
                 height: margin,
                 child: Row(
@@ -105,7 +106,7 @@ class GameWidget extends StatelessWidget {
                   itemBuilder: (BuildContext ctx, index) {
                     final tile = store.tiles[index];
                     return GameTileWidget(
-                      size: (math.min(itemHeight, itemWidth)) * 0.3,
+                      size: (math.min(itemHeight, itemWidth)) * 0.4,
                       tile: tile,
                       parentSize: Size(itemWidth, itemHeight),
                       onTap: () => store.play(index),
