@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_chain_reaction/ui/widgets/blast_widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:neopop/neopop.dart' as neo;
 
 import '../../model/game_tile.dart';
 import 'game_icon_widget.dart';
@@ -24,8 +25,11 @@ class GameTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return neo.NeoPopButton(
+      onTapUp: onTap,
+      color: Colors.black,
+      parentColor: Colors.transparent,
+      buttonPosition: neo.Position.center,
       child: Container(
         color: Colors.black,
         child: Stack(
