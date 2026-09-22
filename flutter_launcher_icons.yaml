@@ -1,4 +1,4 @@
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons/icon.png"
@@ -6,5 +6,5 @@ flutter_icons:
   web:
     generate: true
     image_path: "assets/icons/icon.png"
-    background_color: #C77DFF
-    theme_color: #C77DFF
+    background_color: "#C77DFF"
+    theme_color: "#C77DFF"
