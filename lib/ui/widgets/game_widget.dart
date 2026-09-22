@@ -35,7 +35,7 @@ class GameWidget extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: RadialGradient(
             colors: [
-              color.withOpacity(0.5),
+              color.withValues(alpha: 0.5),
               color,
             ],
           ),

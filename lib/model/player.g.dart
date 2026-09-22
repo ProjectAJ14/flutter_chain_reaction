@@ -24,8 +24,10 @@ mixin _$Player on _Player, Store {
     });
   }
 
-  late final _$hasPlayedAtom =
-      Atom(name: '_Player.hasPlayed', context: context);
+  late final _$hasPlayedAtom = Atom(
+    name: '_Player.hasPlayed',
+    context: context,
+  );
 
   @override
   bool get hasPlayed {
@@ -55,13 +57,16 @@ mixin _$Player on _Player, Store {
     });
   }
 
-  late final _$_PlayerActionController =
-      ActionController(name: '_Player', context: context);
+  late final _$_PlayerActionController = ActionController(
+    name: '_Player',
+    context: context,
+  );
 
   @override
   void incrementScore({int? value}) {
-    final _$actionInfo =
-        _$_PlayerActionController.startAction(name: '_Player.incrementScore');
+    final _$actionInfo = _$_PlayerActionController.startAction(
+      name: '_Player.incrementScore',
+    );
     try {
       return super.incrementScore(value: value);
     } finally {
@@ -71,8 +76,9 @@ mixin _$Player on _Player, Store {
 
   @override
   void resetScore() {
-    final _$actionInfo =
-        _$_PlayerActionController.startAction(name: '_Player.resetScore');
+    final _$actionInfo = _$_PlayerActionController.startAction(
+      name: '_Player.resetScore',
+    );
     try {
       return super.resetScore();
     } finally {
@@ -82,8 +88,9 @@ mixin _$Player on _Player, Store {
 
   @override
   void decrementScore({int? value}) {
-    final _$actionInfo =
-        _$_PlayerActionController.startAction(name: '_Player.decrementScore');
+    final _$actionInfo = _$_PlayerActionController.startAction(
+      name: '_Player.decrementScore',
+    );
     try {
       return super.decrementScore(value: value);
     } finally {

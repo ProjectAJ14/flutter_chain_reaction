@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import 'log_service.dart';
@@ -14,13 +14,15 @@ class LogServiceImpl implements LogService {
     String? query,
   }) {
     _talker = Talker(
-      loggerFilter: isProd
-          ? const LogLevelTalkerLoggerFilter(LogLevel.error)
-          : query != null
-              ? QueryFilter(query)
-              : const LogLevelTalkerLoggerFilter(LogLevel.debug),
-      loggerSettings: const TalkerLoggerSettings(enableColors: true),
-      loggerOutput: debugPrint,
+      logger: TalkerLogger(
+        settings: TalkerLoggerSettings(enableColors: true),
+        filter: isProd
+            ? const LogLevelFilter(LogLevel.error)
+            : query != null
+                ? QueryFilter(query)
+                : const LogLevelFilter(LogLevel.debug),
+        output: debugPrint,
+      ),
     );
   }
 
@@ -49,19 +51,13 @@ class LogServiceImpl implements LogService {
 
   @override
   void onRouteChange(String event, String screen) {
-    service.logTyped(RouteLog('$event : $screen'));
+    service.logCustom(RouteLog('$event : $screen'));
   }
 }
 
-class RouteLog extends FlutterTalkerLog {
-  RouteLog(String message) : super(message);
+class RouteLog extends TalkerLog {
+  RouteLog(super.message) : super(title: 'ROUTE');
 
   @override
   AnsiPen get pen => AnsiPen()..rgb(r: 185, g: 68, b: 36);
-
-  @override
-  Color get color => const Color(0xFFB94424);
-
-  @override
-  String get title => 'ROUTE';
 }

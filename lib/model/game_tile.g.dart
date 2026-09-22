@@ -12,27 +12,38 @@ mixin _$GameTile on _GameTile, Store {
   Computed<bool>? _$isEmptyComputed;
 
   @override
-  bool get isEmpty => (_$isEmptyComputed ??=
-          Computed<bool>(() => super.isEmpty, name: '_GameTile.isEmpty'))
-      .value;
+  bool get isEmpty => (_$isEmptyComputed ??= Computed<bool>(
+    () => super.isEmpty,
+    name: '_GameTile.isEmpty',
+  )).value;
   Computed<bool>? _$isLevel1Computed;
 
   @override
-  bool get isLevel1 => (_$isLevel1Computed ??=
-          Computed<bool>(() => super.isLevel1, name: '_GameTile.isLevel1'))
-      .value;
+  bool get isLevel1 => (_$isLevel1Computed ??= Computed<bool>(
+    () => super.isLevel1,
+    name: '_GameTile.isLevel1',
+  )).value;
   Computed<bool>? _$isLevel2Computed;
 
   @override
-  bool get isLevel2 => (_$isLevel2Computed ??=
-          Computed<bool>(() => super.isLevel2, name: '_GameTile.isLevel2'))
-      .value;
+  bool get isLevel2 => (_$isLevel2Computed ??= Computed<bool>(
+    () => super.isLevel2,
+    name: '_GameTile.isLevel2',
+  )).value;
   Computed<bool>? _$isLevel3Computed;
 
   @override
-  bool get isLevel3 => (_$isLevel3Computed ??=
-          Computed<bool>(() => super.isLevel3, name: '_GameTile.isLevel3'))
-      .value;
+  bool get isLevel3 => (_$isLevel3Computed ??= Computed<bool>(
+    () => super.isLevel3,
+    name: '_GameTile.isLevel3',
+  )).value;
+  Computed<bool>? _$canBlastComputed;
+
+  @override
+  bool get canBlast => (_$canBlastComputed ??= Computed<bool>(
+    () => super.canBlast,
+    name: '_GameTile.canBlast',
+  )).value;
 
   late final _$valueAtom = Atom(name: '_GameTile.value', context: context);
 
@@ -49,8 +60,10 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
-  late final _$playerIndexAtom =
-      Atom(name: '_GameTile.playerIndex', context: context);
+  late final _$playerIndexAtom = Atom(
+    name: '_GameTile.playerIndex',
+    context: context,
+  );
 
   @override
   int get playerIndex {
@@ -65,8 +78,10 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
-  late final _$isBlastedAtom =
-      Atom(name: '_GameTile.isBlasted', context: context);
+  late final _$isBlastedAtom = Atom(
+    name: '_GameTile.isBlasted',
+    context: context,
+  );
 
   @override
   bool get isBlasted {
@@ -81,8 +96,10 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
-  late final _$blastPlayerIndexAtom =
-      Atom(name: '_GameTile.blastPlayerIndex', context: context);
+  late final _$blastPlayerIndexAtom = Atom(
+    name: '_GameTile.blastPlayerIndex',
+    context: context,
+  );
 
   @override
   int get blastPlayerIndex {
@@ -97,26 +114,32 @@ mixin _$GameTile on _GameTile, Store {
     });
   }
 
-  late final _$blastAsyncAction =
-      AsyncAction('_GameTile.blast', context: context);
+  late final _$blastAsyncAction = AsyncAction(
+    '_GameTile.blast',
+    context: context,
+  );
 
   @override
   Future<void> blast() {
     return _$blastAsyncAction.run(() => super.blast());
   }
 
-  late final _$_GameTileActionController =
-      ActionController(name: '_GameTile', context: context);
+  late final _$_GameTileActionController = ActionController(
+    name: '_GameTile',
+    context: context,
+  );
 
   @override
   void update({int? value, int? playerIndex, int blastPlayerIndex = -1}) {
-    final _$actionInfo =
-        _$_GameTileActionController.startAction(name: '_GameTile.update');
+    final _$actionInfo = _$_GameTileActionController.startAction(
+      name: '_GameTile.update',
+    );
     try {
       return super.update(
-          value: value,
-          playerIndex: playerIndex,
-          blastPlayerIndex: blastPlayerIndex);
+        value: value,
+        playerIndex: playerIndex,
+        blastPlayerIndex: blastPlayerIndex,
+      );
     } finally {
       _$_GameTileActionController.endAction(_$actionInfo);
     }
@@ -132,7 +155,8 @@ blastPlayerIndex: ${blastPlayerIndex},
 isEmpty: ${isEmpty},
 isLevel1: ${isLevel1},
 isLevel2: ${isLevel2},
-isLevel3: ${isLevel3}
+isLevel3: ${isLevel3},
+canBlast: ${canBlast}
     ''';
   }
 }

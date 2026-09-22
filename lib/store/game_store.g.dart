@@ -12,29 +12,33 @@ mixin _$GameStore on _GameStore, Store {
   Computed<Color>? _$currentPlayerColorComputed;
 
   @override
-  Color get currentPlayerColor => (_$currentPlayerColorComputed ??=
-          Computed<Color>(() => super.currentPlayerColor,
-              name: '_GameStore.currentPlayerColor'))
-      .value;
+  Color get currentPlayerColor =>
+      (_$currentPlayerColorComputed ??= Computed<Color>(
+        () => super.currentPlayerColor,
+        name: '_GameStore.currentPlayerColor',
+      )).value;
   Computed<bool>? _$allPlayersHavePlayedComputed;
 
   @override
-  bool get allPlayersHavePlayed => (_$allPlayersHavePlayedComputed ??=
-          Computed<bool>(() => super.allPlayersHavePlayed,
-              name: '_GameStore.allPlayersHavePlayed'))
-      .value;
+  bool get allPlayersHavePlayed =>
+      (_$allPlayersHavePlayedComputed ??= Computed<bool>(
+        () => super.allPlayersHavePlayed,
+        name: '_GameStore.allPlayersHavePlayed',
+      )).value;
   Computed<bool>? _$hasWinnerComputed;
 
   @override
-  bool get hasWinner => (_$hasWinnerComputed ??=
-          Computed<bool>(() => super.hasWinner, name: '_GameStore.hasWinner'))
-      .value;
+  bool get hasWinner => (_$hasWinnerComputed ??= Computed<bool>(
+    () => super.hasWinner,
+    name: '_GameStore.hasWinner',
+  )).value;
   Computed<Player>? _$winnerComputed;
 
   @override
-  Player get winner => (_$winnerComputed ??=
-          Computed<Player>(() => super.winner, name: '_GameStore.winner'))
-      .value;
+  Player get winner => (_$winnerComputed ??= Computed<Player>(
+    () => super.winner,
+    name: '_GameStore.winner',
+  )).value;
 
   late final _$statusAtom = Atom(name: '_GameStore.status', context: context);
 
@@ -51,8 +55,10 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$isLoadingAtom =
-      Atom(name: '_GameStore.isLoading', context: context);
+  late final _$isLoadingAtom = Atom(
+    name: '_GameStore.isLoading',
+    context: context,
+  );
 
   @override
   bool get isLoading {
@@ -82,8 +88,10 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$currentPlayerIndexAtom =
-      Atom(name: '_GameStore.currentPlayerIndex', context: context);
+  late final _$currentPlayerIndexAtom = Atom(
+    name: '_GameStore.currentPlayerIndex',
+    context: context,
+  );
 
   @override
   int get currentPlayerIndex {
@@ -98,8 +106,10 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$winnerPlayerIndexAtom =
-      Atom(name: '_GameStore.winnerPlayerIndex', context: context);
+  late final _$winnerPlayerIndexAtom = Atom(
+    name: '_GameStore.winnerPlayerIndex',
+    context: context,
+  );
 
   @override
   int get winnerPlayerIndex {
@@ -114,8 +124,10 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$boardSizeAtom =
-      Atom(name: '_GameStore.boardSize', context: context);
+  late final _$boardSizeAtom = Atom(
+    name: '_GameStore.boardSize',
+    context: context,
+  );
 
   @override
   BoardSize get boardSize {
@@ -130,8 +142,10 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$playerCountAtom =
-      Atom(name: '_GameStore.playerCount', context: context);
+  late final _$playerCountAtom = Atom(
+    name: '_GameStore.playerCount',
+    context: context,
+  );
 
   @override
   int get playerCount {
@@ -161,32 +175,48 @@ mixin _$GameStore on _GameStore, Store {
     });
   }
 
-  late final _$playNeighboursAsyncAction =
-      AsyncAction('_GameStore.playNeighbours', context: context);
+  late final _$playNeighboursAsyncAction = AsyncAction(
+    '_GameStore.playNeighbours',
+    context: context,
+  );
 
   @override
   Future<void> playNeighbours(int tileIndex) {
-    return _$playNeighboursAsyncAction
-        .run(() => super.playNeighbours(tileIndex));
+    return _$playNeighboursAsyncAction.run(
+      () => super.playNeighbours(tileIndex),
+    );
   }
 
-  late final _$playAsyncAction =
-      AsyncAction('_GameStore.play', context: context);
+  late final _$_playAsyncAction = AsyncAction(
+    '_GameStore._play',
+    context: context,
+  );
 
   @override
-  Future<void> _play(int tileIndex,
-      {bool changeTurn = true, bool autoPlayed = false}) {
-    return _$playAsyncAction.run(() =>
-        super._play(tileIndex, changeTurn: changeTurn, autoPlayed: autoPlayed));
+  Future<void> _play(
+    int tileIndex, {
+    bool changeTurn = true,
+    bool autoPlayed = false,
+  }) {
+    return _$_playAsyncAction.run(
+      () => super._play(
+        tileIndex,
+        changeTurn: changeTurn,
+        autoPlayed: autoPlayed,
+      ),
+    );
   }
 
-  late final _$_GameStoreActionController =
-      ActionController(name: '_GameStore', context: context);
+  late final _$_GameStoreActionController = ActionController(
+    name: '_GameStore',
+    context: context,
+  );
 
   @override
   void init() {
-    final _$actionInfo =
-        _$_GameStoreActionController.startAction(name: '_GameStore.init');
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+      name: '_GameStore.init',
+    );
     try {
       return super.init();
     } finally {
@@ -197,7 +227,8 @@ mixin _$GameStore on _GameStore, Store {
   @override
   void setBoardSize(BoardSize value) {
     final _$actionInfo = _$_GameStoreActionController.startAction(
-        name: '_GameStore.setBoardSize');
+      name: '_GameStore.setBoardSize',
+    );
     try {
       return super.setBoardSize(value);
     } finally {
@@ -208,7 +239,8 @@ mixin _$GameStore on _GameStore, Store {
   @override
   void setPlayerCount(int value) {
     final _$actionInfo = _$_GameStoreActionController.startAction(
-        name: '_GameStore.setPlayerCount');
+      name: '_GameStore.setPlayerCount',
+    );
     try {
       return super.setPlayerCount(value);
     } finally {
@@ -219,7 +251,8 @@ mixin _$GameStore on _GameStore, Store {
   @override
   void showLoading() {
     final _$actionInfo = _$_GameStoreActionController.startAction(
-        name: '_GameStore.showLoading');
+      name: '_GameStore.showLoading',
+    );
     try {
       return super.showLoading();
     } finally {
@@ -230,7 +263,8 @@ mixin _$GameStore on _GameStore, Store {
   @override
   void hideLoading() {
     final _$actionInfo = _$_GameStoreActionController.startAction(
-        name: '_GameStore.hideLoading');
+      name: '_GameStore.hideLoading',
+    );
     try {
       return super.hideLoading();
     } finally {
@@ -240,8 +274,9 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void reset() {
-    final _$actionInfo =
-        _$_GameStoreActionController.startAction(name: '_GameStore.reset');
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+      name: '_GameStore.reset',
+    );
     try {
       return super.reset();
     } finally {
@@ -251,8 +286,9 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void setWinner(int playerIndex) {
-    final _$actionInfo =
-        _$_GameStoreActionController.startAction(name: '_GameStore.setWinner');
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+      name: '_GameStore.setWinner',
+    );
     try {
       return super.setWinner(playerIndex);
     } finally {
@@ -263,7 +299,8 @@ mixin _$GameStore on _GameStore, Store {
   @override
   bool checkWinner() {
     final _$actionInfo = _$_GameStoreActionController.startAction(
-        name: '_GameStore.checkWinner');
+      name: '_GameStore.checkWinner',
+    );
     try {
       return super.checkWinner();
     } finally {
@@ -273,8 +310,9 @@ mixin _$GameStore on _GameStore, Store {
 
   @override
   void nextTurn() {
-    final _$actionInfo =
-        _$_GameStoreActionController.startAction(name: '_GameStore.nextTurn');
+    final _$actionInfo = _$_GameStoreActionController.startAction(
+      name: '_GameStore.nextTurn',
+    );
     try {
       return super.nextTurn();
     } finally {

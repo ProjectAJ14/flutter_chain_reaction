@@ -16,7 +16,7 @@ class GameOverWidget extends StatelessWidget {
         children: [
           WinnerConfetti.show(context),
           Container(
-            color: store.winner.color.withOpacity(0.5),
+            color: store.winner.color.withValues(alpha: 0.5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
